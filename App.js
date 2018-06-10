@@ -1,15 +1,28 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import Login from './src/Login';
+import Main from './src/Main';
 
 export default class App extends React.Component {
+
+  state = {
+    isLoggedIn: false,
+    token: ''
+  }
+
+  setToken = (t) => {
+    this.setState({
+      token: t,
+      isLoggedIn: true
+    })
+  }
+
   render() {
-    return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
-      </View>
-    );
+    if (this.state.isLoggedIn) {
+      return (<Main />)
+    } else {
+      return (<Login setToken = {this.setToken} onLoginPress={() => this.setState({isLoggedIn: true})} />)
+    }
   }
 }
 
@@ -19,5 +32,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
+  }
 });
