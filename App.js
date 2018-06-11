@@ -19,9 +19,9 @@ export default class App extends React.Component {
 
   render() {
     if (this.state.isLoggedIn) {
-      return (<Main />)
+      return (<Main style={{paddingTop: Expo.Constants.statusBarHeight}} />)
     } else {
-      return (<Login setToken = {this.setToken} onLoginPress={() => this.setState({isLoggedIn: true})} />)
+      return (<Login style={{paddingTop: Expo.Constants.statusBarHeight}} setToken = {this.setToken} onLoginPress={() => this.setState({isLoggedIn: true})} />)
     }
   }
 }

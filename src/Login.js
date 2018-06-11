@@ -35,11 +35,11 @@ export default class Login extends React.Component {
           Login
         </Text>
         <TextInput placeholder='email' onChangeText={(email) => this.setState({email})} />
-        <TextInput placeholder='password' onChangeText={(password) => this.setState({password})} />
+        <TextInput placeholder='password' onChangeText={(password) => this.setState({password})} secureTextEntry={true} />
         <View style={{margin:7}} />
           {!!this.state.errorMessage && (
             <Text styel={{fontSize: 14, color: 'red', padding: 5}}>
-              {this.state.errorMessage}
+              Wronger email and/or password
             </Text>
           )}
           {this.state.loggingIn && <ActivityIndicator />}

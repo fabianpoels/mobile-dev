@@ -1,24 +1,33 @@
-import React from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, View, Button } from 'react-native';
+import React from 'react'
+import { createMaterialTopTabNavigator } from 'react-navigation'
+import { Text, View } from 'react-native'
 
-export default class Main extends React.Component {
-
-  render() {
+class Main extends React.Component {
+  render () {
     return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Home Screen</Text>
       </View>
     )
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
+class Details extends React.Component {
+  render () {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Details Screen</Text>
+      </View>
+    )
   }
-})
+}
+
+export default createMaterialTopTabNavigator(
+  {
+    Home: Main,
+    Details: Details
+  },
+  {
+    initialRouteName: 'Home'
+  }
+)

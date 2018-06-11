@@ -1,6 +1,10 @@
 {
   "expo": {
     "sdkVersion": "27.0.0",
-    "slug": "kami"
+    "slug": "kami",
+    "androidStatusBar": {
+      "backgroundColor": "#000000"
+    }
+
   }
 }
