@@ -1,33 +1,11 @@
-import React from 'react'
-import { createMaterialTopTabNavigator } from 'react-navigation'
-import { Text, View } from 'react-native'
+import { createStackNavigator } from 'react-navigation'
+import Kami from './screens/Kami'
 
-class Main extends React.Component {
-  render () {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Home Screen</Text>
-      </View>
-    )
-  }
-}
-
-class Details extends React.Component {
-  render () {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Details Screen</Text>
-      </View>
-    )
-  }
-}
-
-export default createMaterialTopTabNavigator(
+export default createStackNavigator(
   {
-    Home: Main,
-    Details: Details
+    Kami: { screen: Kami }
   },
   {
-    initialRouteName: 'Home'
+    headerMode: 'none'
   }
 )

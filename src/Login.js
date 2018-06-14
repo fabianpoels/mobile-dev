@@ -1,8 +1,9 @@
 import React from 'react'
 import Axios from 'axios'
 import Globals from '../Globals'
-import { ActivityIndicator, ScrollView, StyleSheet, Text, TextInput, View, Button } from 'react-native'
-
+import { ActivityIndicator, PropTypes, View, StyleSheet, Text, TextInput, Modal } from 'react-native'
+import { Button } from 'react-native-material-ui'
+import { COLOR } from 'react-native-material-ui';
 export default class Login extends React.Component {
 
   state = {
@@ -30,25 +31,61 @@ export default class Login extends React.Component {
 
   render() {
     return (
-      <ScrollView style={{padding: 20}}>
+      <View style={{padding: 20}}>
         <Text style={{fontSize: 27}}>
-          Login
+          Kami - Login
         </Text>
-        <TextInput placeholder='email' onChangeText={(email) => this.setState({email})} />
-        <TextInput placeholder='password' onChangeText={(password) => this.setState({password})} secureTextEntry={true} />
+        <TextInput
+          style={{height:50}}
+          placeholder='email'
+          onChangeText={(email) => this.setState({email})}
+          underlineColorAndroid={COLOR.green500}
+          blurOnSubmit = {true}
+          autoCorrect={false}
+        />
+        <TextInput
+          style={{height:50}}
+          placeholder='password'
+          onChangeText={(password) => this.setState({password})}
+          secureTextEntry={true}
+          underlineColorAndroid={COLOR.green500}
+          blurOnSubmit = {true}
+        />
         <View style={{margin:7}} />
-          {!!this.state.errorMessage && (
-            <Text styel={{fontSize: 14, color: 'red', padding: 5}}>
-              Wronger email and/or password
-            </Text>
-          )}
-          {this.state.loggingIn && <ActivityIndicator />}
           <Button
+            raised primary
             disabled={this.state.loggingIn || !this.state.email || !this.state.password}
             onPress={this._userLogin}
-            title="Login"
+            text="Login"
           />
-        </ScrollView>
+          {!!this.state.errorMessage && (
+            <Text style={{fontSize: 14, color: 'red', padding: 5}}>
+              {this.state.errorMessage}
+            </Text>
+          )}
+          <Modal
+            transparent={true}
+            visible={this.state.loggingIn}
+            style={styles.modalStyle}
+            onRequestClose = {() =>{}}
+          >
+            <View style={styles.modalStyle}>
+              <ActivityIndicator
+                color={COLOR.green500}
+                size="large"
+              />
+            </View>
+          </Modal>
+        </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+    modalStyle:{
+        flex:1,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center',
+    }
+})

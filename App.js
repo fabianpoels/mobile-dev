@@ -2,6 +2,19 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Login from './src/Login';
 import Main from './src/Main';
+import { COLOR, ThemeProvider } from 'react-native-material-ui';
+
+
+const uiTheme = {
+  palette: {
+    primaryColor: COLOR.green500,
+  },
+  toolbar: {
+    container: {
+      height: 50
+    }
+  }
+}
 
 export default class App extends React.Component {
 
@@ -19,9 +32,17 @@ export default class App extends React.Component {
 
   render() {
     if (this.state.isLoggedIn) {
-      return (<Main style={{paddingTop: Expo.Constants.statusBarHeight}} />)
+      return (
+        <ThemeProvider uiTheme={uiTheme}>
+          <Main style={{paddingTop: Expo.Constants.statusBarHeight}} />
+        </ThemeProvider>
+      )
     } else {
-      return (<Login style={{paddingTop: Expo.Constants.statusBarHeight}} setToken = {this.setToken} onLoginPress={() => this.setState({isLoggedIn: true})} />)
+      return (
+        <ThemeProvider uiTheme={uiTheme}>
+          <Login uiTheme={uiTheme} style={{paddingTop: Expo.Constants.statusBarHeight}} setToken = {this.setToken} onLoginPress={() => this.setState({isLoggedIn: true})} />
+        </ThemeProvider>
+      )
     }
   }
 }
