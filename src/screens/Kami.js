@@ -1,6 +1,6 @@
 import React from 'react'
+import { Toolbar, ListItem } from 'react-native-material-ui'
 import { View } from 'react-native'
-import { Toolbar, Drawer } from 'react-native-material-ui'
 import { PropTypes } from 'prop-types'
 
 const propTypes = {
@@ -16,25 +16,14 @@ class Kami extends React.Component {
         <Toolbar
           centerElement='Kami'
           leftElement='menu'
-          onLeftElementPress={() => this.props.navigation.openDrawer()}
         />
-        <Drawer>
-          <Drawer.Section
-            divider
-            items={[
-              { icon: 'bookmark-border', value: 'Notifications' },
-              { icon: 'today', value: 'Calendar', active: true },
-              { icon: 'people', value: 'Clients' }
-            ]}
-          />
-          <Drawer.Section
-            title='Personal'
-            items={[
-              { icon: 'info', value: 'Info' },
-              { icon: 'settings', value: 'Settings' }
-            ]}
-          />
-        </Drawer>
+        <ListItem
+          divider
+          centerElement={{
+            primaryText: 'Customers'
+          }}
+          onPress={() => this.props.navigation.navigate('Customers', {token: this.props.screenProps.token})}
+        />
       </View>
     )
   }

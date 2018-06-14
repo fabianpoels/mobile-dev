@@ -1,7 +1,8 @@
 import React from 'react'
 import Axios from 'axios'
 import Globals from '../Globals'
-import { ActivityIndicator, PropTypes, View, StyleSheet, Text, TextInput, Modal } from 'react-native'
+import { ActivityIndicator, View, StyleSheet, Text, TextInput, Modal } from 'react-native'
+import { PropTypes } from 'prop-types'
 import { Button } from 'react-native-material-ui'
 import { COLOR } from 'react-native-material-ui';
 export default class Login extends React.Component {

@@ -34,7 +34,10 @@ export default class App extends React.Component {
     if (this.state.isLoggedIn) {
       return (
         <ThemeProvider uiTheme={uiTheme}>
-          <Main style={{paddingTop: Expo.Constants.statusBarHeight}} />
+          <Main
+            screenProps={{token: this.state.token}}
+            style={{paddingTop: Expo.Constants.statusBarHeight}}
+          />
         </ThemeProvider>
       )
     } else {
