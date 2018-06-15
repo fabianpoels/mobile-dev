@@ -1,7 +1,7 @@
 import React from 'react'
 import Axios from 'axios'
 import Globals from '../../Globals'
-import { Toolbar, ListItem, COLOR, ActionButton} from 'react-native-material-ui'
+import { Toolbar, ListItem, COLOR, ActionButton, Card} from 'react-native-material-ui'
 import { ActivityIndicator, StyleSheet, View, Text, Modal, ScrollView } from 'react-native'
 import { PropTypes } from 'prop-types'
 
@@ -48,7 +48,6 @@ class Customers extends React.Component {
       })
     })
   }
-
   render () {
     return (
       <View>
@@ -91,8 +90,7 @@ class Customers extends React.Component {
         </Modal>
         {!(this.state.errorMessage && !this.state.loading) && (
         <ActionButton
-          onPress={() => this.setState({
-            addCustomer: true})}
+          onPress={() => this.props.navigation.navigate('AddCustomer', {token: this.props.navigation.state.params.token})}
         />)}
       </View>
     )
