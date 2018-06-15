@@ -1,9 +1,8 @@
 import React from 'react'
 import Axios from 'axios'
 import Globals from '../../Globals'
-import { Toolbar, ListItem } from 'react-native-material-ui'
+import { Toolbar, ListItem, COLOR, ActionButton} from 'react-native-material-ui'
 import { ActivityIndicator, StyleSheet, View, Text, Modal, ScrollView } from 'react-native'
-import { COLOR } from 'react-native-material-ui';
 import { PropTypes } from 'prop-types'
 
 const propTypes = {
@@ -17,7 +16,8 @@ class Customers extends React.Component {
   state = {
     customersList: [],
     loading: false,
-    errorMessage: ''
+    errorMessage: '',
+    addCustomer: false
   }
 
   componentDidMount() {
@@ -36,8 +36,14 @@ class Customers extends React.Component {
         loading: false
       })
     }).catch(e => {
+      let error;
+      if (e.response) {
+        error = e.response.data.error
+      } else {
+        error = e.message
+      }
       this.setState({
-        errorMessage: e.message,
+        errorMessage: error,
         loading: false
       })
     })
@@ -83,6 +89,11 @@ class Customers extends React.Component {
             />
           </View>
         </Modal>
+        {!(this.state.errorMessage && !this.state.loading) && (
+        <ActionButton
+          onPress={() => this.setState({
+            addCustomer: true})}
+        />)}
       </View>
     )
   }

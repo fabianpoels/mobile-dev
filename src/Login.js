@@ -23,9 +23,15 @@ export default class Login extends React.Component {
     Axios.post(Globals.API_URL+'/auth', params).then( response => {
       this.props.setToken(response.data.token)
     }).catch(e => {
+      let error;
+      if (e.response) {
+        error = e.response.data.error
+      } else {
+        error = e.message
+      }
       this.setState({
         loggingIn: false,
-        errorMessage: e.message
+        errorMessage: error
       })
     })
   }
@@ -39,7 +45,10 @@ export default class Login extends React.Component {
         <TextInput
           style={{height:50}}
           placeholder='email'
-          onChangeText={(email) => this.setState({email})}
+          onChangeText={(email) => this.setState({
+            email: email,
+            errorMessage: ''
+          })}
           underlineColorAndroid={COLOR.green500}
           blurOnSubmit = {true}
           autoCorrect={false}
@@ -47,7 +56,10 @@ export default class Login extends React.Component {
         <TextInput
           style={{height:50}}
           placeholder='password'
-          onChangeText={(password) => this.setState({password})}
+          onChangeText={(password) => this.setState({
+            password: password,
+            errormessage: ''
+          })}
           secureTextEntry={true}
           underlineColorAndroid={COLOR.green500}
           blurOnSubmit = {true}
