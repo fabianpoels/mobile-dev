@@ -22,15 +22,13 @@ class Customers extends React.Component {
 
   componentDidMount() {
     this.setState({loading: true, errorMessage: ''})
-    Axios.get(
-      Globals.API_URL+'/customer/list',
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': this.props.navigation.state.params.token
-        }
+    const API = Axios.create({
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': this.props.navigation.state.params.token
       }
-    ).then( response => {
+    })
+    API.get(Globals.API_URL+'/customer/list').then( response => {
       this.setState({
         customersList: response.data,
         loading: false
@@ -48,6 +46,7 @@ class Customers extends React.Component {
       })
     })
   }
+
   render () {
     return (
       <View>

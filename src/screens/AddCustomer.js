@@ -1,9 +1,10 @@
 import React from 'react'
 import Axios from 'axios'
 import Globals from '../../Globals'
-import { Toolbar, ListItem, COLOR, ActionButton, Card, Button, Avatar } from 'react-native-material-ui'
-import { ActivityIndicator, StyleSheet, View, Text, Modal, ScrollView, TextInput } from 'react-native'
+import { Toolbar, ListItem, COLOR, ActionButton, Card, Button, Icon } from 'react-native-material-ui'
+import { ActivityIndicator, StyleSheet, View, Text, Modal, ScrollView, TextInput, Picker } from 'react-native'
 import { PropTypes } from 'prop-types'
+import GenerateForm from 'react-native-form-builder'
 
 const propTypes = {
   navigation: PropTypes.shape({
@@ -11,14 +12,107 @@ const propTypes = {
   }).isRequired
 }
 
+const formFields = [
+  {
+    type: 'text',
+    name: 'name',
+    label: 'Name',
+    required: true
+  },
+  {
+    type: 'email',
+    name: 'email',
+    label: 'E-mail',
+    required: true
+  },
+  {
+      type: 'text',
+      name: 'vat',
+      label: 'VAT'
+  },
+  {
+    type: 'picker',
+    name: 'type',
+    mode: 'dropdown',
+    label: 'Type',
+    options: ['VZW', 'BVBA', 'NV', 'Private', 'Other']
+  },
+  {
+    type: 'group',
+    name: 'address',
+    label: 'Address',
+    fields: [
+      {
+        type: 'text',
+        name: 'street',
+        label: 'Street'
+      },
+      {
+        type: 'text',
+        name: 'houseNumber',
+        label: 'Number'
+      },
+      {
+        type: 'text',
+        name: 'city',
+        label: 'City'
+      },
+      {
+        type: 'text',
+        name: 'postalCode',
+        label: 'Zip code'
+      },
+      {
+        type: 'text',
+        name: 'country',
+        label: 'Country'
+      }
+    ]
+  }
+]
+
 class AddCustomer extends React.Component {
 
   state = {
     saving: false,
     errorMessage: '',
     customer : {
-      name: ''
+      name: '',
+      vat: '',
+      phone: '',
+      type: '',
+      address: {
+        street: '',
+        houseNumber: '',
+        postalCode: '',
+        country: ''
+      }
     }
+  }
+
+  _addCustomer = () => {
+    this.setState({saving: true, errorMessage: ''})
+    const API = Axios.create({
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': this.props.navigation.state.params.token
+      }
+    })
+    API.post(Globals.API_URL+'/customer/add', this.formGenerator.getValues()).then( response => {
+      this.setState({saving: false, errorMessage: ''})
+      this.props.navigation.navigate('Customers')
+    }).catch(e => {
+      let error;
+      if (e.response) {
+        error = e.response.data.error
+      } else {
+        error = e.message
+      }
+      this.setState({
+        errorMessage: error,
+        loading: false
+      })
+    })
   }
 
   render () {
@@ -29,12 +123,8 @@ class AddCustomer extends React.Component {
             leftElement='clear'
             onLeftElementPress={() => this.props.navigation.goBack()}
             centerElement='Add customer'
-            rightElement={
-              <Button
-                text='Save'
-                style={{ text: { color: 'white' } }}
-              />
-            }
+            rightElement='check'
+            onRightElementPress={() => this._addCustomer()}
           />
           {!!this.state.errorMessage && (
             <Text style={{fontSize: 14, color: 'red', padding: 5}}>
@@ -42,25 +132,13 @@ class AddCustomer extends React.Component {
             </Text>
           )}
         </View>
-        <ScrollView>
-          <View style={styles.avatarContainer}>
-            <Avatar icon="person" iconSize={20} size={28} />
-            <TextInput
-              style={{height:50}}
-              placeholder='name'
-              onChangeText={(name) => {
-                const newCustomer = Object.assign({}, this.state.customer, {name: name})
-                this.setState({
-                  customer: newCustomer,
-                  errorMessage: ''
-                })
-              }}
-              underlineColorAndroid={COLOR.green500}
-              blurOnSubmit = {true}
-              autoCorrect={false}
-            />
-          </View>
-        </ScrollView>
+        <View>
+          <GenerateForm
+            ref={(c) => {this.formGenerator = c}}
+            fields={formFields}
+            autoValidation={true}
+          />
+        </View>
         <Modal
           transparent={true}
           visible={this.state.saving}
@@ -85,11 +163,7 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'center',
-    },
-    avatarContainer: {
-        paddingLeft: 12,
-        paddingTop: 16
-    },
+    }
 })
 
 AddCustomer.propTypes = propTypes
