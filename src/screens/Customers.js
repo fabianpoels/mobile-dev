@@ -1,8 +1,8 @@
 import React from 'react'
 import Axios from 'axios'
 import Globals from '../../Globals'
-import { Toolbar, ListItem, COLOR, ActionButton, Card} from 'react-native-material-ui'
-import { ActivityIndicator, StyleSheet, View, Text, Modal, ScrollView } from 'react-native'
+import { Toolbar, ListItem, COLOR, ActionButton, Card, Icon } from 'react-native-material-ui'
+import { ActivityIndicator, StyleSheet, View, Text, Modal, ScrollView, RefreshControl } from 'react-native'
 import { PropTypes } from 'prop-types'
 
 const propTypes = {
@@ -16,11 +16,12 @@ class Customers extends React.Component {
   state = {
     customersList: [],
     loading: false,
+    refreshing: false,
     errorMessage: '',
     addCustomer: false
   }
 
-  componentDidMount() {
+  _loadCustomers = () => {
     this.setState({loading: true, errorMessage: ''})
     const API = Axios.create({
       headers: {
@@ -47,6 +48,35 @@ class Customers extends React.Component {
     })
   }
 
+  _refreshCustomers = () => {
+    this.setState({errorMessage: ''})
+    const API = Axios.create({
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': this.props.navigation.state.params.token
+      }
+    })
+    API.get(Globals.API_URL+'/customer/list').then( response => {
+      this.setState({
+        customersList: response.data,
+      })
+    }).catch(e => {
+      let error;
+      if (e.response) {
+        error = e.response.data.error
+      } else {
+        error = e.message
+      }
+      this.setState({
+        errorMessage: error,
+      })
+    })
+  }
+
+  componentDidMount() {
+    this._loadCustomers()
+  }
+
   render () {
     return (
       <View>
@@ -55,6 +85,8 @@ class Customers extends React.Component {
             leftElement='arrow-back'
             centerElement='Customers'
             onLeftElementPress={() => this.props.navigation.goBack()}
+            rightElement='add'
+            onRightElementPress={() => this.props.navigation.navigate('AddCustomer', {token: this.props.navigation.state.params.token})}
           />
           {!!this.state.errorMessage && (
             <Text style={{fontSize: 14, color: 'red', padding: 5}}>
@@ -62,7 +94,17 @@ class Customers extends React.Component {
             </Text>
           )}
         </View>
-        <ScrollView>
+        <View>
+
+        </View>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              onRefresh={() => this._refreshCustomers()}
+              refreshing={this.state.refreshing}
+            />
+            }
+        >
           {
             this.state.customersList.map((c) => {
               return (
@@ -70,6 +112,10 @@ class Customers extends React.Component {
                   key={c._id}
                   divider
                   centerElement={{ primaryText: c.name }}
+                  onPress={() => this.props.navigation.navigate('ViewCustomer', {token: this.props.screenProps.token, customer: c})}
+                  rightElement={
+                    <Icon name='chevron-right' />
+                  }
                 />)
             })
           }
@@ -87,10 +133,7 @@ class Customers extends React.Component {
             />
           </View>
         </Modal>
-        {!(this.state.errorMessage && !this.state.loading) && (
-        <ActionButton
-          onPress={() => this.props.navigation.navigate('AddCustomer', {token: this.props.navigation.state.params.token})}
-        />)}
+
       </View>
     )
   }

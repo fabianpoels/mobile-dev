@@ -52,6 +52,7 @@ export default class Login extends React.Component {
           underlineColorAndroid={COLOR.green500}
           blurOnSubmit = {true}
           autoCorrect={false}
+          keyboardType='email-address'
         />
         <TextInput
           style={{height:50}}

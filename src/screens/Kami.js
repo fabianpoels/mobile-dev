@@ -1,5 +1,5 @@
 import React from 'react'
-import { Toolbar, ListItem } from 'react-native-material-ui'
+import { Toolbar, ListItem, Icon } from 'react-native-material-ui'
 import { View } from 'react-native'
 import { PropTypes } from 'prop-types'
 
@@ -23,6 +23,9 @@ class Kami extends React.Component {
             primaryText: 'Customers'
           }}
           onPress={() => this.props.navigation.navigate('Customers', {token: this.props.screenProps.token})}
+          rightElement={
+            <Icon name='chevron-right' />
+          }
         />
       </View>
     )

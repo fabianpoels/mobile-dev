@@ -1,7 +1,7 @@
 import React from 'react'
 import Axios from 'axios'
 import Globals from '../../Globals'
-import { Toolbar, ListItem, COLOR, ActionButton, Card, Button, Icon } from 'react-native-material-ui'
+import { Toolbar, ListItem, COLOR, ActionButton, Card, Button } from 'react-native-material-ui'
 import { ActivityIndicator, StyleSheet, View, Text, Modal, ScrollView, TextInput, Picker } from 'react-native'
 import { PropTypes } from 'prop-types'
 import GenerateForm from 'react-native-form-builder'
@@ -78,6 +78,7 @@ class AddCustomer extends React.Component {
     errorMessage: '',
     customer : {
       name: '',
+      email: '',
       vat: '',
       phone: '',
       type: '',
@@ -110,7 +111,7 @@ class AddCustomer extends React.Component {
       }
       this.setState({
         errorMessage: error,
-        loading: false
+        saving: false
       })
     })
   }
@@ -126,13 +127,13 @@ class AddCustomer extends React.Component {
             rightElement='check'
             onRightElementPress={() => this._addCustomer()}
           />
-          {!!this.state.errorMessage && (
-            <Text style={{fontSize: 14, color: 'red', padding: 5}}>
-              {this.state.errorMessage}
-            </Text>
-          )}
         </View>
-        <View>
+        {!!this.state.errorMessage && (
+          <Text style={{fontSize: 14, color: 'red', padding: 5}}>
+            {this.state.errorMessage}
+          </Text>
+        )}
+        <View style={{backgroundColor: '#fff'}}>
           <GenerateForm
             ref={(c) => {this.formGenerator = c}}
             fields={formFields}
