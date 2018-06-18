@@ -16,13 +16,40 @@ class ViewCustomer extends React.Component {
   state = {
     loading: false,
     errorMessage: '',
-    customer: {}
+    customer: {},
+    contactPersons: []
+  }
+
+  _loadCustomer = () => {
+    this.setState({loading: true, errorMessage: ''})
+    const API = Axios.create({
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': this.props.navigation.state.params.token
+      }
+    })
+    API.get(Globals.API_URL+'/customer/'+this.props.navigation.state.params.customer._id).then( response => {
+      this.setState({
+        customer: response.data,
+        contactPersons: response.data.contactPersons,
+        loading: false
+      })
+    }).catch(e => {
+      let error;
+      if (e.response) {
+        error = e.response.data.error
+      } else {
+        error = e.message
+      }
+      this.setState({
+        errorMessage: error,
+        loading: false
+      })
+    })
   }
 
   componentDidMount() {
-    this.setState({
-      customer: this.props.navigation.state.params.customer
-    })
+    this._loadCustomer()
   }
 
   render () {
@@ -103,7 +130,7 @@ class ViewCustomer extends React.Component {
                 onPress={() => {}}
               />
               <ListItem
-                leftElement={<Icon name='map'/>}
+                leftElement={<Icon name='public'/>}
                 centerElement={{
                   primaryText: this.state.customer.address.country
                 }}
@@ -111,6 +138,27 @@ class ViewCustomer extends React.Component {
               />
             </Card>
           )}
+          <Card>
+            <ListItem
+              divider
+              leftElement={<Icon name='contacts'/>}
+              centerElement={{
+                primaryText: 'Contacts'
+              }}
+              onPress={() => {}}
+            />
+            {this.state.contactPersons.map((contactPerson) => {
+              return (
+                <ListItem
+                  key={contactPerson._id}
+                  centerElement={{ primaryText: contactPerson.firstName + ' ' + contactPerson.lastName }}
+                  onPress={() => {}}
+                  rightElement={
+                    <Icon name='chevron-right' />
+                  }
+                />)
+            })}
+          </Card>
         </ScrollView>
         <Modal
           transparent={true}

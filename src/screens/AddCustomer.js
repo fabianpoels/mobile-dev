@@ -104,6 +104,7 @@ class AddCustomer extends React.Component {
       this.props.navigation.navigate('Customers')
     }).catch(e => {
       let error;
+      console.warn(e)
       if (e.response) {
         error = e.response.data.error
       } else {
