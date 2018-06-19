@@ -1,7 +1,7 @@
 import React from 'react'
 import Axios from 'axios'
 import Globals from '../../Globals'
-import { Toolbar, ListItem, COLOR, ActionButton, Card, Icon, Avatar } from 'react-native-material-ui'
+import { Toolbar, ListItem, COLOR, ActionButton, Card, Icon, Avatar, Dialog, DialogDefaultActions } from 'react-native-material-ui'
 import { ActivityIndicator, StyleSheet, View, Text, Modal, ScrollView, RefreshControl } from 'react-native'
 import { PropTypes } from 'prop-types'
 
@@ -15,6 +15,7 @@ class ViewCustomer extends React.Component {
 
   state = {
     loading: false,
+    delete: false,
     errorMessage: '',
     customer: {},
     contactPersons: []
@@ -35,7 +36,34 @@ class ViewCustomer extends React.Component {
         loading: false
       })
     }).catch(e => {
-      let error;
+      let error
+      if (e.response) {
+        error = e.response.data.error
+      } else {
+        error = e.message
+      }
+      this.setState({
+        errorMessage: error,
+        loading: false
+      })
+    })
+  }
+
+  _deleteCustomer = () => {
+    this.setState({delete: false, loading: true, errorMessage: ''})
+    const API = Axios.create({
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': this.props.navigation.state.params.token
+      }
+    })
+    API.delete(Globals.API_URL+'/customer/'+this.state.customer._id).then( response => {
+      this.setState({
+        loading: false
+      })
+      this.props.navigation.goBack()
+    }).catch(e => {
+      let error
       if (e.response) {
         error = e.response.data.error
       } else {
@@ -54,12 +82,20 @@ class ViewCustomer extends React.Component {
 
   render () {
     return (
-      <View>
+      <View style={{flex:1}}>
         <View>
           <Toolbar
             leftElement='arrow-back'
             centerElement={this.state.customer.name}
             onLeftElementPress={() => this.props.navigation.goBack()}
+            rightElement={{actions: ['edit', 'delete']}}
+            onRightElementPress={(action) => {
+              if (action=='edit') {
+                //this.props.navigation.navigate('EditCustomer', {token: this.props.navigation.state.params.token})
+              } else {
+                this.setState({delete: true})
+              }
+            }}
           />
           {!!this.state.errorMessage && (
             <Text style={{fontSize: 14, color: 'red', padding: 5}}>
@@ -67,7 +103,7 @@ class ViewCustomer extends React.Component {
             </Text>
           )}
         </View>
-        <ScrollView>
+        <ScrollView style={{flex:1}}>
           <Card>
             <ListItem
               leftElement={<Icon name='domain'/>}
@@ -113,29 +149,35 @@ class ViewCustomer extends React.Component {
           </Card>
           {!!this.state.customer.address && (
             <Card>
-              <ListItem
-                leftElement={<Icon name='location-on'/>}
-                centerElement={{
-                  primaryText: this.state.customer.address.street,
-                  secondaryText: this.state.customer.address.houseNumber
-                }}
-                onPress={() => {}}
-              />
-              <ListItem
-                leftElement={<Icon name='location-city'/>}
-                centerElement={{
-                  primaryText: this.state.customer.address.postalCode,
-                  secondaryText: this.state.customer.address.city
-                }}
-                onPress={() => {}}
-              />
-              <ListItem
-                leftElement={<Icon name='public'/>}
-                centerElement={{
-                  primaryText: this.state.customer.address.country
-                }}
-                onPress={() => {}}
-              />
+              {(!!this.state.customer.address.street && !!this.state.customer.address.houseNumber) && (
+                <ListItem
+                  leftElement={<Icon name='location-on'/>}
+                  centerElement={{
+                    primaryText: this.state.customer.address.street,
+                    secondaryText: this.state.customer.address.houseNumber
+                  }}
+                  onPress={() => {}}
+                />
+              )}
+              {(!!this.state.customer.address.postalCode && !!this.state.customer.address.city) && (
+                <ListItem
+                  leftElement={<Icon name='location-city'/>}
+                  centerElement={{
+                    primaryText: this.state.customer.address.postalCode,
+                    secondaryText: this.state.customer.address.city
+                  }}
+                  onPress={() => {}}
+                />
+              )}
+              {!!this.state.customer.address.country && (
+                <ListItem
+                  leftElement={<Icon name='public'/>}
+                  centerElement={{
+                    primaryText: this.state.customer.address.country
+                  }}
+                  onPress={() => {}}
+                />
+              )}
             </Card>
           )}
           <Card>
@@ -158,6 +200,17 @@ class ViewCustomer extends React.Component {
                   }
                 />)
             })}
+            <ListItem
+              divider
+              leftElement={<Icon name='person-add'/>}
+              centerElement={{
+                primaryText: 'Add contact'
+              }}
+              rightElement={
+                <Icon name='chevron-right' />
+              }
+              onPress={() => {}}
+            />
           </Card>
         </ScrollView>
         <Modal
@@ -173,7 +226,35 @@ class ViewCustomer extends React.Component {
             />
           </View>
         </Modal>
-
+        <Modal
+          transparent={true}
+          visible={this.state.delete}
+          style={styles.modalStyle}
+          onRequestClose = {() =>{}}
+        >
+          <View style={styles.modalStyle}>
+            <Dialog>
+              <Dialog.Title><Text>Are you sure?</Text></Dialog.Title>
+              <Dialog.Content>
+                <Text>
+                  This will permanently delete the customer. Are you sure you want to continue?
+                </Text>
+              </Dialog.Content>
+              <Dialog.Actions>
+                <DialogDefaultActions
+                  actions={['cancel', 'delete']}
+                  onActionPress={(action) => {
+                    if (action=='delete') {
+                      this._deleteCustomer()
+                    } else {
+                      this.setState({delete: false})
+                    }
+                  }}
+                />
+              </Dialog.Actions>
+            </Dialog>
+          </View>
+        </Modal>
       </View>
     )
   }
