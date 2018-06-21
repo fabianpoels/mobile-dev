@@ -11,17 +11,17 @@ const propTypes = {
   }).isRequired
 }
 
-class ViewCustomer extends React.Component {
+class ViewContact extends React.Component {
 
   state = {
     loading: false,
     delete: false,
     errorMessage: '',
     customer: {},
-    contactPersons: []
+    contact: {}
   }
 
-  _loadCustomer = () => {
+  _loadContact = () => {
     this.setState({loading: true, errorMessage: ''})
     const API = Axios.create({
       headers: {
@@ -29,10 +29,10 @@ class ViewCustomer extends React.Component {
         'x-access-token': this.props.navigation.state.params.token
       }
     })
-    API.get(Globals.API_URL+'/customer/'+this.props.navigation.state.params.customer._id).then( response => {
+    API.get(Globals.API_URL+'/contactPerson/'+this.props.navigation.state.params.contact._id).then( response => {
       this.setState({
-        customer: response.data,
-        contactPersons: response.data.contactPersons,
+        contact: response.data,
+        customer: response.data.customer,
         loading: false
       })
     }).catch(e => {
@@ -288,6 +288,6 @@ const styles = StyleSheet.create({
     }
 })
 
-ViewCustomer.propTypes = propTypes
+ViewContact.propTypes = propTypes
 
-export default ViewCustomer
+export default ViewContact

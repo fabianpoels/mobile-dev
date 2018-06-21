@@ -35,6 +35,12 @@ const formFields = [
     type: 'text',
     name: 'phone',
     label: 'Phone number'
+  },
+  {
+    type: 'text',
+    name: 'customer',
+    label: 'customer',
+    editable: false
   }
 ]
 
@@ -54,14 +60,14 @@ class AddContact extends React.Component {
         'x-access-token': this.props.navigation.state.params.token
       }
     })
-    API.post(Globals.API_URL+'/customer/add', this.formGenerator.getValues()).then( response => {
+    API.post(Globals.API_URL+'/contactPerson/add/'+this.props.navigation.state.params.customerId, this.formGenerator.getValues()).then( response => {
       this.setState({saving: false, errorMessage: ''})
       this.props.navigation.navigate('Customers')
     }).catch(e => {
       if (e.response) {
         if(e.response.data.error.errors) {
           this.setState({
-            errorMessage: 'Error adding customer',
+            errorMessage: 'Error adding contact',
             saving: false,
             errors: e.response.data.error.errors
           })
@@ -149,8 +155,7 @@ class AddContact extends React.Component {
             ref={(c) => {this.formGenerator = c}}
             fields={formFields}
             formData={{
-              name: '',
-              email: ''
+              customer: this.props.navigation.state.params.customerId
             }}
             autoValidation={true}
           />
