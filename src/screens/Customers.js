@@ -88,7 +88,7 @@ class Customers extends React.Component {
             rightElement='add'
             onRightElementPress={() => this.props.navigation.navigate('AddCustomer', {
               token: this.props.navigation.state.params.token,
-              onNavigateBack: this._refreshCustomers
+              onNavigateBack: this._loadCustomers
             })}
           />
           {!!this.state.errorMessage && (
