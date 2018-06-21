@@ -79,7 +79,7 @@ class Contacts extends React.Component {
 
   render () {
     return (
-      <View>
+      <View style={{flex:1}}>
         <View>
           <Toolbar
             leftElement='arrow-back'
@@ -95,7 +95,7 @@ class Contacts extends React.Component {
         <View>
 
         </View>
-        <ScrollView
+        <ScrollView style={{flex:1}}
           refreshControl={
             <RefreshControl
               onRefresh={() => this._refreshContacts()}
@@ -104,7 +104,7 @@ class Contacts extends React.Component {
             }
         >
           {
-            this.state.contactsList.map((c) => {
+            (this.state.contactsList.length > 0) && (this.state.contactsList.map((c) => {
               return (
                 <ListItem
                   key={c._id}
@@ -115,7 +115,7 @@ class Contacts extends React.Component {
                     <Icon name='chevron-right' />
                   }
                 />)
-            })
+            }))
           }
         </ScrollView>
         <Modal

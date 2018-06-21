@@ -118,14 +118,7 @@ class ViewContact extends React.Component {
             <ListItem
               leftElement={<Icon name='person'/>}
               centerElement={{
-                primaryText: this.state.contact.firstName,
-              }}
-              onPress={() => {}}
-            />
-            <ListItem
-              leftElement={<Text></Text>}
-              centerElement={{
-                primaryText: this.state.contact.lastName,
+                primaryText: this.state.contact.firstName + ' ' + this.state.contact.lastName,
               }}
               onPress={() => {}}
             />

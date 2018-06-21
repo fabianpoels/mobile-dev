@@ -38,12 +38,6 @@ const formFields = [
   },
   {
     type: 'text',
-    name: 'customer',
-    label: 'customer',
-    editable: false
-  },
-  {
-    type: 'text',
     name: '_id',
     label: '_id',
     editable: false

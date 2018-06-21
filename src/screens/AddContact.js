@@ -62,7 +62,7 @@ class AddContact extends React.Component {
     })
     API.post(Globals.API_URL+'/contactPerson/add/'+this.props.navigation.state.params.customerId, this.formGenerator.getValues()).then( response => {
       this.setState({saving: false, errorMessage: ''})
-      this.props.navigation.navigate('Customers')
+      this.props.navigation.goBack()
     }).catch(e => {
       if (e.response) {
         if(e.response.data.error.errors) {
@@ -85,7 +85,7 @@ class AddContact extends React.Component {
 
   render () {
     return (
-      <View>
+      <View style={{flex:1}}>
         <View>
           <Toolbar
             leftElement='clear'
@@ -150,7 +150,7 @@ class AddContact extends React.Component {
             </Card>
           )
         }
-        <View style={{backgroundColor: '#fff'}}>
+        <View style={{backgroundColor: '#fff', flex: 1}}>
           <GenerateForm
             ref={(c) => {this.formGenerator = c}}
             fields={formFields}

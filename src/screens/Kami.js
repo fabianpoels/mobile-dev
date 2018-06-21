@@ -12,7 +12,7 @@ const propTypes = {
 class Kami extends React.Component {
   render () {
     return (
-      <View>
+      <View style={{flex:1}}>
         <Toolbar
           centerElement='Kami'
           leftElement='menu'

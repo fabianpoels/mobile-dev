@@ -94,7 +94,7 @@ class AddCustomer extends React.Component {
     })
     API.post(Globals.API_URL+'/customer/add', this.formGenerator.getValues()).then( response => {
       this.setState({saving: false, errorMessage: ''})
-      this.props.navigation.navigate('Customers')
+      this.props.navigation.goBack()
     }).catch(e => {
       if (e.response) {
         if(e.response.data.error.errors) {
@@ -117,7 +117,7 @@ class AddCustomer extends React.Component {
 
   render () {
     return (
-      <View>
+      <View style={{flex:1}}>
         <View>
           <Toolbar
             leftElement='clear'
@@ -170,7 +170,7 @@ class AddCustomer extends React.Component {
             </Card>
           )
         }
-        <View style={{backgroundColor: '#fff'}}>
+        <View style={{backgroundColor: '#fff', flex: 1}}>
           <GenerateForm
             ref={(c) => {this.formGenerator = c}}
             fields={formFields}

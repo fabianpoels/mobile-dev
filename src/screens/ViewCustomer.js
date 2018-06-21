@@ -83,8 +83,6 @@ class ViewCustomer extends React.Component {
     })
   }
 
-
-
   componentDidMount() {
     this._loadCustomer()
   }
@@ -207,11 +205,12 @@ class ViewCustomer extends React.Component {
             {this.state.contactPersons.map((contactPerson) => {
               return (
                 <ListItem
+                  divider
                   key={contactPerson._id}
                   centerElement={{ primaryText: contactPerson.firstName + ' ' + contactPerson.lastName }}
                   onPress={() => this.props.navigation.navigate('ViewContact', {
                     token: this.props.screenProps.token,
-                    contact: contact
+                    contact: contactPerson
                   })}
                   rightElement={
                     <Icon name='chevron-right' />
