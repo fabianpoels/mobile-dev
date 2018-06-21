@@ -15,8 +15,14 @@ const propTypes = {
 const formFields = [
   {
     type: 'text',
-    name: 'name',
-    label: 'Name',
+    name: 'firstName',
+    label: 'First name',
+    required: true
+  },
+  {
+    type: 'text',
+    name: 'lastName',
+    label: 'Last name',
     required: true
   },
   {
@@ -26,58 +32,31 @@ const formFields = [
     required: true
   },
   {
-      type: 'text',
-      name: 'vat',
-      label: 'VAT'
+    type: 'text',
+    name: 'phone',
+    label: 'Phone number'
   },
   {
-    type: 'picker',
-    name: 'type',
-    mode: 'dropdown',
-    label: 'Type',
-    options: ['VZW', 'BVBA', 'NV', 'Private', 'Other']
-  },
-  {
-    type: 'group',
-    name: 'address',
-    label: 'Address',
-    fields: [
-      {
-        type: 'text',
-        name: 'street',
-        label: 'Street'
-      },
-      {
-        type: 'text',
-        name: 'houseNumber',
-        label: 'Number'
-      },
-      {
-        type: 'text',
-        name: 'city',
-        label: 'City'
-      },
-      {
-        type: 'text',
-        name: 'postalCode',
-        label: 'Zip code'
-      },
-      {
-        type: 'text',
-        name: 'country',
-        label: 'Country'
-      }
-    ]
+    type: 'text',
+    name: 'customer',
+    label: 'customer',
+    editable: false
   },
   {
     type: 'text',
     name: '_id',
     label: '_id',
     editable: false
+  },
+  {
+    type: 'text',
+    name: 'customer',
+    label: 'customer',
+    editable: false
   }
 ]
 
-class EditCustomer extends React.Component {
+class EditContact extends React.Component {
 
   state = {
     saving: false,
@@ -85,7 +64,7 @@ class EditCustomer extends React.Component {
     errors: {}
   }
 
-  _updateCustomer = () => {
+  _updateContact = () => {
     this.setState({saving: true, errorMessage: ''})
     const API = Axios.create({
       headers: {
@@ -93,7 +72,7 @@ class EditCustomer extends React.Component {
         'x-access-token': this.props.navigation.state.params.token
       }
     })
-    API.put(Globals.API_URL+'/customer/', this.formGenerator.getValues()).then( response => {
+    API.put(Globals.API_URL+'/contactPerson/', this.formGenerator.getValues()).then( response => {
       this.setState({saving: false, errorMessage: ''})
       this.props.navigation.state.params.onNavigateBack(response.data)
       this.props.navigation.goBack()
@@ -101,7 +80,7 @@ class EditCustomer extends React.Component {
       if (e.response) {
         if(e.response.data.error.errors) {
           this.setState({
-            errorMessage: 'Error adding customer',
+            errorMessage: 'Error updating contact',
             saving: false,
             errors: e.response.data.error.errors
           })
@@ -124,9 +103,9 @@ class EditCustomer extends React.Component {
           <Toolbar
             leftElement='arrow-back'
             onLeftElementPress={() => this.props.navigation.goBack()}
-            centerElement='Edit customer'
+            centerElement='Edit contact'
             rightElement='check'
-            onRightElementPress={() => this._updateCustomer()}
+            onRightElementPress={() => this._updateContact()}
           />
         </View>
         {
@@ -146,14 +125,26 @@ class EditCustomer extends React.Component {
                 centerElement={{ primaryText: this.state.errorMessage}}
               />
               {
-                !!this.state.errors.name && (
+                !!this.state.errors.firstName && (
                   <ListItem
                     style={{
                       primaryText: {
                         fontSize: 14, color: 'red',
                       }
                     }}
-                    centerElement={{ primaryText: this.state.errors.name.message}}
+                    centerElement={{ primaryText: this.state.errors.firstName.message}}
+                  />
+                )
+              }
+              {
+                !!this.state.errors.lastName && (
+                  <ListItem
+                    style={{
+                      primaryText: {
+                        fontSize: 14, color: 'red',
+                      }
+                    }}
+                    centerElement={{ primaryText: this.state.errors.lastName.message}}
                   />
                 )
               }
@@ -178,19 +169,12 @@ class EditCustomer extends React.Component {
             fields={formFields}
             autoValidation={true}
             formData={{
-              _id: this.props.navigation.state.params.customer._id,
-              name: this.props.navigation.state.params.customer.name,
-              email: this.props.navigation.state.params.customer.email,
-              vat: this.props.navigation.state.params.customer.vat,
-              phone: this.props.navigation.state.params.customer.phone,
-              type: this.props.navigation.state.params.customer.type,
-              address: {
-                street: this.props.navigation.state.params.customer.address.street,
-                houseNumber: this.props.navigation.state.params.customer.address.houseNumber,
-                postalCode: this.props.navigation.state.params.customer.address.postalCode,
-                city: this.props.navigation.state.params.customer.address.city,
-                country: this.props.navigation.state.params.customer.address.country,
-              }
+              _id: this.props.navigation.state.params.contact._id,
+              firstName: this.props.navigation.state.params.contact.firstName,
+              lastName: this.props.navigation.state.params.contact.lastName,
+              email: this.props.navigation.state.params.contact.email,
+              phone: this.props.navigation.state.params.contact.phone,
+              customer: this.props.navigation.state.params.contact.customer
             }}
           />
         </View>
@@ -222,6 +206,6 @@ const styles = StyleSheet.create({
     }
 })
 
-EditCustomer.propTypes = propTypes
+EditContact.propTypes = propTypes
 
-export default EditCustomer
+export default EditContact

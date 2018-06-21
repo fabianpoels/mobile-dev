@@ -37,6 +37,11 @@ export default class App extends React.Component {
     })
   }
 
+  componentDidMount() {
+    console.disableYellowBox = true
+  }
+
+
   render() {
     if (this.state.isLoggedIn) {
       return (
@@ -46,7 +51,6 @@ export default class App extends React.Component {
               token: this.state.token,
               logout: this._logout
             }}
-            style={{paddingTop: Expo.Constants.statusBarHeight}}
           />
         </ThemeProvider>
       )

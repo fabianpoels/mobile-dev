@@ -7,6 +7,7 @@ import ViewCustomer from './screens/ViewCustomer'
 import EditCustomer from './screens/EditCustomer'
 import AddContact from './screens/AddContact'
 import ViewContact from './screens/ViewContact'
+import EditContact from './screens/EditContact'
 
 export default createStackNavigator(
   {
@@ -17,7 +18,8 @@ export default createStackNavigator(
     ViewCustomer: { screen: ViewCustomer },
     EditCustomer: { screen: EditCustomer },
     AddContact: { screen: AddContact },
-    ViewContact: { screen: ViewContact }
+    ViewContact: { screen: ViewContact },
+    EditContact: { screen: EditContact }
   },
   {
     headerMode: 'none'
