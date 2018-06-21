@@ -29,6 +29,16 @@ class Kami extends React.Component {
             <Icon name='chevron-right' />
           }
         />
+        <ListItem
+          divider
+          centerElement={{
+            primaryText: 'Contacts'
+          }}
+          onPress={() => this.props.navigation.navigate('Contacts', {token: this.props.screenProps.token})}
+          rightElement={
+            <Icon name='chevron-right' />
+          }
+        />
       </View>
     )
   }

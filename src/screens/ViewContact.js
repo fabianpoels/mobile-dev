@@ -17,7 +17,6 @@ class ViewContact extends React.Component {
     loading: false,
     delete: false,
     errorMessage: '',
-    customer: {},
     contact: {}
   }
 
@@ -32,7 +31,6 @@ class ViewContact extends React.Component {
     API.get(Globals.API_URL+'/contactPerson/'+this.props.navigation.state.params.contact._id).then( response => {
       this.setState({
         contact: response.data,
-        customer: response.data.customer,
         loading: false
       })
     }).catch(e => {
@@ -49,14 +47,13 @@ class ViewContact extends React.Component {
     })
   }
 
-  _updateCustomer = (c) => {
+  _updateContact = (c) => {
     this.setState({
-      customer: c,
-      contactPersons: c.contactPersons
+      contact: c,
     })
   }
 
-  _deleteCustomer = () => {
+  _deleteContact = () => {
     this.setState({delete: false, loading: true, errorMessage: ''})
     const API = Axios.create({
       headers: {
@@ -64,7 +61,7 @@ class ViewContact extends React.Component {
         'x-access-token': this.props.navigation.state.params.token
       }
     })
-    API.delete(Globals.API_URL+'/customer/'+this.state.customer._id).then( response => {
+    API.delete(Globals.API_URL+'/contactPerson/'+this.state.contact._id).then( response => {
       this.setState({
         loading: false
       })
@@ -83,10 +80,8 @@ class ViewContact extends React.Component {
     })
   }
 
-
-
   componentDidMount() {
-    this._loadCustomer()
+    this._loadContact()
   }
 
   render () {
@@ -95,15 +90,15 @@ class ViewContact extends React.Component {
         <View>
           <Toolbar
             leftElement='arrow-back'
-            centerElement={this.state.customer.name}
+            centerElement={this.state.contact.firstName + ' ' + this.state.contact.lastName}
             onLeftElementPress={() => this.props.navigation.goBack()}
             rightElement={{actions: ['edit', 'delete']}}
             onRightElementPress={(action) => {
               if (action.action=='edit') {
-                this.props.navigation.navigate('EditCustomer', {
+                this.props.navigation.navigate('EditContact', {
                   token: this.props.navigation.state.params.token,
-                  customer: this.state.customer,
-                  onNavigateBack: this._updateCustomer
+                  contact: this.state.contact,
+                  onNavigateBack: this._updateContact
                 })
               } else {
                 this.setState({delete: true})
@@ -121,114 +116,35 @@ class ViewContact extends React.Component {
         <ScrollView style={{flex:1}}>
           <Card>
             <ListItem
-              leftElement={<Icon name='domain'/>}
+              leftElement={<Icon name='person'/>}
               centerElement={{
-                primaryText: this.state.customer.name,
+                primaryText: this.state.contact.firstName,
+              }}
+              onPress={() => {}}
+            />
+            <ListItem
+              leftElement={<Text></Text>}
+              centerElement={{
+                primaryText: this.state.contact.lastName,
               }}
               onPress={() => {}}
             />
             <ListItem
               leftElement={<Icon name='email'/>}
               centerElement={{
-                primaryText: this.state.customer.email
+                primaryText: this.state.contact.email
               }}
               onPress={() => {}}
             />
-            {(!!this.state.customer.vat && this.state.customer.vat!='') && (
-              <ListItem
-                leftElement={<Text>VAT</Text>}
-                centerElement={{
-                  primaryText: this.state.customer.vat
-                }}
-                onPress={() => {}}
-              />
-            )}
-            {(!!this.state.customer.phone && this.state.customer.phone!='') && (
+            {(!!this.state.contact.phone && this.state.contact.phone!='') && (
               <ListItem
                 leftElement={<Icon name='phone'/>}
                 centerElement={{
-                  primaryText: this.state.customer.phone
+                  primaryText: this.state.contact.phone
                 }}
                 onPress={() => {}}
               />
             )}
-            {(!!this.state.customer.type && this.state.customer.type!='') && (
-              <ListItem
-                leftElement={<Text></Text>}
-                centerElement={{
-                  primaryText: this.state.customer.type
-                }}
-                onPress={() => {}}
-              />
-            )}
-          </Card>
-          {!!this.state.customer.address && (
-            <Card>
-              {(!!this.state.customer.address.street && !!this.state.customer.address.houseNumber) && (
-                <ListItem
-                  leftElement={<Icon name='location-on'/>}
-                  centerElement={{
-                    primaryText: this.state.customer.address.street,
-                    secondaryText: this.state.customer.address.houseNumber
-                  }}
-                  onPress={() => {}}
-                />
-              )}
-              {(!!this.state.customer.address.postalCode && !!this.state.customer.address.city) && (
-                <ListItem
-                  leftElement={<Icon name='location-city'/>}
-                  centerElement={{
-                    primaryText: this.state.customer.address.postalCode,
-                    secondaryText: this.state.customer.address.city
-                  }}
-                  onPress={() => {}}
-                />
-              )}
-              {!!this.state.customer.address.country && (
-                <ListItem
-                  leftElement={<Icon name='public'/>}
-                  centerElement={{
-                    primaryText: this.state.customer.address.country
-                  }}
-                  onPress={() => {}}
-                />
-              )}
-            </Card>
-          )}
-          <Card>
-            <ListItem
-              divider
-              leftElement={<Icon name='contacts'/>}
-              centerElement={{
-                primaryText: 'Contacts'
-              }}
-              onPress={() => {}}
-            />
-            {this.state.contactPersons.map((contactPerson) => {
-              return (
-                <ListItem
-                  key={contactPerson._id}
-                  centerElement={{ primaryText: contactPerson.firstName + ' ' + contactPerson.lastName }}
-                  onPress={() => {}}
-                  rightElement={
-                    <Icon name='chevron-right' />
-                  }
-                />)
-            })}
-            <ListItem
-              divider
-              leftElement={<Icon name='person-add'/>}
-              centerElement={{
-                primaryText: 'Add contact'
-              }}
-              rightElement={
-                <Icon name='add' />
-              }
-              onPress={() => this.props.navigation.navigate('AddContact', {
-                token: this.props.screenProps.token,
-                customerId: this.state.customer._id
-              })}
-            />
           </Card>
         </ScrollView>
         <Modal
@@ -255,7 +171,7 @@ class ViewContact extends React.Component {
               <Dialog.Title><Text>Are you sure?</Text></Dialog.Title>
               <Dialog.Content>
                 <Text>
-                  This will permanently delete the customer. Are you sure you want to continue?
+                  This will permanently delete the contact. Are you sure you want to continue?
                 </Text>
               </Dialog.Content>
               <Dialog.Actions>
@@ -263,7 +179,7 @@ class ViewContact extends React.Component {
                   actions={['cancel', 'delete']}
                   onActionPress={(action) => {
                     if (action=='delete') {
-                      this._deleteCustomer()
+                      this._deleteContact()
                     } else {
                       this.setState({delete: false})
                     }

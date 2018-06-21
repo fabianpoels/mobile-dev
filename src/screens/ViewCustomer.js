@@ -209,7 +209,10 @@ class ViewCustomer extends React.Component {
                 <ListItem
                   key={contactPerson._id}
                   centerElement={{ primaryText: contactPerson.firstName + ' ' + contactPerson.lastName }}
-                  onPress={() => {}}
+                  onPress={() => this.props.navigation.navigate('ViewContact', {
+                    token: this.props.screenProps.token,
+                    contact: contact
+                  })}
                   rightElement={
                     <Icon name='chevron-right' />
                   }
