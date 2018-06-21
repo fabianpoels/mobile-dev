@@ -49,6 +49,13 @@ class ViewCustomer extends React.Component {
     })
   }
 
+  _updateCustomer = (c) => {
+    this.setState({
+      customer: c,
+      contactPersons: c.contactPersons
+    })
+  }
+
   _deleteCustomer = () => {
     this.setState({delete: false, loading: true, errorMessage: ''})
     const API = Axios.create({
@@ -76,6 +83,8 @@ class ViewCustomer extends React.Component {
     })
   }
 
+
+
   componentDidMount() {
     this._loadCustomer()
   }
@@ -90,17 +99,23 @@ class ViewCustomer extends React.Component {
             onLeftElementPress={() => this.props.navigation.goBack()}
             rightElement={{actions: ['edit', 'delete']}}
             onRightElementPress={(action) => {
-              if (action=='edit') {
-                //this.props.navigation.navigate('EditCustomer', {token: this.props.navigation.state.params.token})
+              if (action.action=='edit') {
+                this.props.navigation.navigate('EditCustomer', {
+                  token: this.props.navigation.state.params.token,
+                  customer: this.state.customer,
+                  onNavigateBack: this._updateCustomer
+                })
               } else {
                 this.setState({delete: true})
               }
             }}
           />
           {!!this.state.errorMessage && (
-            <Text style={{fontSize: 14, color: 'red', padding: 5}}>
-              {this.state.errorMessage}
-            </Text>
+            <Card>
+              <Text style={{fontSize: 14, color: 'red', padding: 5}}>
+                {this.state.errorMessage}
+              </Text>
+            </Card>
           )}
         </View>
         <ScrollView style={{flex:1}}>
@@ -109,6 +124,13 @@ class ViewCustomer extends React.Component {
               leftElement={<Icon name='domain'/>}
               centerElement={{
                 primaryText: this.state.customer.name,
+              }}
+              onPress={() => {}}
+            />
+            <ListItem
+              leftElement={<Icon name='email'/>}
+              centerElement={{
+                primaryText: this.state.customer.email
               }}
               onPress={() => {}}
             />
@@ -121,13 +143,6 @@ class ViewCustomer extends React.Component {
                 onPress={() => {}}
               />
             )}
-            <ListItem
-              leftElement={<Icon name='email'/>}
-              centerElement={{
-                primaryText: this.state.customer.email
-              }}
-              onPress={() => {}}
-            />
             {(!!this.state.customer.phone && this.state.customer.phone!='') && (
               <ListItem
                 leftElement={<Icon name='phone'/>}

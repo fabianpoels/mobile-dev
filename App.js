@@ -30,12 +30,22 @@ export default class App extends React.Component {
     })
   }
 
+  _logout = () => {
+    this.setState({
+      token: '',
+      isLoggedIn: false
+    })
+  }
+
   render() {
     if (this.state.isLoggedIn) {
       return (
         <ThemeProvider uiTheme={uiTheme}>
           <Main
-            screenProps={{token: this.state.token}}
+            screenProps={{
+              token: this.state.token,
+              logout: this._logout
+            }}
             style={{paddingTop: Expo.Constants.statusBarHeight}}
           />
         </ThemeProvider>

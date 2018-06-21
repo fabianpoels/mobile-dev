@@ -31,6 +31,11 @@ const formFields = [
       label: 'VAT'
   },
   {
+    type: 'text',
+    name: 'phone',
+    label: 'Phone number'
+  },
+  {
     type: 'picker',
     name: 'type',
     mode: 'dropdown',
@@ -76,19 +81,7 @@ class AddCustomer extends React.Component {
   state = {
     saving: false,
     errorMessage: '',
-    customer : {
-      name: '',
-      email: '',
-      vat: '',
-      phone: '',
-      type: '',
-      address: {
-        street: '',
-        houseNumber: '',
-        postalCode: '',
-        country: ''
-      }
-    }
+    errors: {}
   }
 
   _addCustomer = () => {
@@ -103,17 +96,22 @@ class AddCustomer extends React.Component {
       this.setState({saving: false, errorMessage: ''})
       this.props.navigation.navigate('Customers')
     }).catch(e => {
-      let error;
-      console.warn(e)
       if (e.response) {
-        error = e.response.data.error
+        if(e.response.data.error.errors) {
+          this.setState({
+            errorMessage: 'Error adding customer',
+            saving: false,
+            errors: e.response.data.error.errors
+          })
+        } else {
+          this.setState({
+            errorMessage: e.response.data.error,
+            saving: false
+          })
+        }
       } else {
         error = e.message
       }
-      this.setState({
-        errorMessage: error,
-        saving: false
-      })
     })
   }
 
@@ -129,15 +127,57 @@ class AddCustomer extends React.Component {
             onRightElementPress={() => this._addCustomer()}
           />
         </View>
-        {!!this.state.errorMessage && (
-          <Text style={{fontSize: 14, color: 'red', padding: 5}}>
-            {this.state.errorMessage}
-          </Text>
-        )}
+        {
+          !!this.state.errorMessage && (
+            <Card
+              onPress={() => this.setState({
+                errorMessage: '',
+                errors: '',
+              })}
+            >
+              <ListItem
+                style={{
+                  primaryText: {
+                    fontSize: 14, color: 'red',
+                  }
+                }}
+                centerElement={{ primaryText: this.state.errorMessage}}
+              />
+              {
+                !!this.state.errors.name && (
+                  <ListItem
+                    style={{
+                      primaryText: {
+                        fontSize: 14, color: 'red',
+                      }
+                    }}
+                    centerElement={{ primaryText: this.state.errors.name.message}}
+                  />
+                )
+              }
+              {
+                !!this.state.errors.email && (
+                  <ListItem
+                    style={{
+                      primaryText: {
+                        fontSize: 14, color: 'red',
+                      }
+                    }}
+                    centerElement={{ primaryText: this.state.errors.email.message}}
+                  />
+                )
+              }
+            </Card>
+          )
+        }
         <View style={{backgroundColor: '#fff'}}>
           <GenerateForm
             ref={(c) => {this.formGenerator = c}}
             fields={formFields}
+            formData={{
+              name: '',
+              email: ''
+            }}
             autoValidation={true}
           />
         </View>

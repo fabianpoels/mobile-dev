@@ -15,8 +15,14 @@ const propTypes = {
 const formFields = [
   {
     type: 'text',
-    name: 'name',
-    label: 'Name',
+    name: 'firstName',
+    label: 'First name',
+    required: true
+  },
+  {
+    type: 'text',
+    name: 'lastName',
+    label: 'Last name',
     required: true
   },
   {
@@ -26,58 +32,13 @@ const formFields = [
     required: true
   },
   {
-      type: 'text',
-      name: 'vat',
-      label: 'VAT'
-  },
-  {
-    type: 'picker',
-    name: 'type',
-    mode: 'dropdown',
-    label: 'Type',
-    options: ['VZW', 'BVBA', 'NV', 'Private', 'Other']
-  },
-  {
-    type: 'group',
-    name: 'address',
-    label: 'Address',
-    fields: [
-      {
-        type: 'text',
-        name: 'street',
-        label: 'Street'
-      },
-      {
-        type: 'text',
-        name: 'houseNumber',
-        label: 'Number'
-      },
-      {
-        type: 'text',
-        name: 'city',
-        label: 'City'
-      },
-      {
-        type: 'text',
-        name: 'postalCode',
-        label: 'Zip code'
-      },
-      {
-        type: 'text',
-        name: 'country',
-        label: 'Country'
-      }
-    ]
-  },
-  {
     type: 'text',
-    name: '_id',
-    label: '_id',
-    editable: false
+    name: 'phone',
+    label: 'Phone number'
   }
 ]
 
-class EditCustomer extends React.Component {
+class AddContact extends React.Component {
 
   state = {
     saving: false,
@@ -85,7 +46,7 @@ class EditCustomer extends React.Component {
     errors: {}
   }
 
-  _updateCustomer = () => {
+  _addContact = () => {
     this.setState({saving: true, errorMessage: ''})
     const API = Axios.create({
       headers: {
@@ -93,10 +54,9 @@ class EditCustomer extends React.Component {
         'x-access-token': this.props.navigation.state.params.token
       }
     })
-    API.put(Globals.API_URL+'/customer/', this.formGenerator.getValues()).then( response => {
+    API.post(Globals.API_URL+'/customer/add', this.formGenerator.getValues()).then( response => {
       this.setState({saving: false, errorMessage: ''})
-      this.props.navigation.state.params.onNavigateBack(response.data)
-      this.props.navigation.goBack()
+      this.props.navigation.navigate('Customers')
     }).catch(e => {
       if (e.response) {
         if(e.response.data.error.errors) {
@@ -122,11 +82,11 @@ class EditCustomer extends React.Component {
       <View>
         <View>
           <Toolbar
-            leftElement='arrow-back'
+            leftElement='clear'
             onLeftElementPress={() => this.props.navigation.goBack()}
-            centerElement='Edit customer'
+            centerElement='Add contact'
             rightElement='check'
-            onRightElementPress={() => this._updateCustomer()}
+            onRightElementPress={() => this._addContact()}
           />
         </View>
         {
@@ -146,14 +106,26 @@ class EditCustomer extends React.Component {
                 centerElement={{ primaryText: this.state.errorMessage}}
               />
               {
-                !!this.state.errors.name && (
+                !!this.state.errors.firstName && (
                   <ListItem
                     style={{
                       primaryText: {
                         fontSize: 14, color: 'red',
                       }
                     }}
-                    centerElement={{ primaryText: this.state.errors.name.message}}
+                    centerElement={{ primaryText: this.state.errors.firstName.message}}
+                  />
+                )
+              }
+              {
+                !!this.state.errors.lastName && (
+                  <ListItem
+                    style={{
+                      primaryText: {
+                        fontSize: 14, color: 'red',
+                      }
+                    }}
+                    centerElement={{ primaryText: this.state.errors.lastName.message}}
                   />
                 )
               }
@@ -176,22 +148,11 @@ class EditCustomer extends React.Component {
           <GenerateForm
             ref={(c) => {this.formGenerator = c}}
             fields={formFields}
-            autoValidation={true}
             formData={{
-              _id: this.props.navigation.state.params.customer._id,
-              name: this.props.navigation.state.params.customer.name,
-              email: this.props.navigation.state.params.customer.email,
-              vat: this.props.navigation.state.params.customer.vat,
-              phone: this.props.navigation.state.params.customer.phone,
-              type: this.props.navigation.state.params.customer.type,
-              address: {
-                street: this.props.navigation.state.params.customer.address.street,
-                houseNumber: this.props.navigation.state.params.customer.address.houseNumber,
-                postalCode: this.props.navigation.state.params.customer.address.postalCode,
-                city: this.props.navigation.state.params.customer.address.city,
-                country: this.props.navigation.state.params.customer.address.country,
-              }
+              name: '',
+              email: ''
             }}
+            autoValidation={true}
           />
         </View>
         <Modal
@@ -222,6 +183,6 @@ const styles = StyleSheet.create({
     }
 })
 
-EditCustomer.propTypes = propTypes
+AddContact.propTypes = propTypes
 
-export default EditCustomer
+export default AddContact

@@ -16,6 +16,8 @@ class Kami extends React.Component {
         <Toolbar
           centerElement='Kami'
           leftElement='menu'
+          rightElement='exit-to-app'
+          onRightElementPress={() => this.props.screenProps.logout()}
         />
         <ListItem
           divider
