@@ -94,6 +94,7 @@ class AddCustomer extends React.Component {
     })
     API.post(Globals.API_URL+'/customer/add', this.formGenerator.getValues()).then( response => {
       this.setState({saving: false, errorMessage: ''})
+      this.props.navigation.state.params.onNavigateBack()
       this.props.navigation.goBack()
     }).catch(e => {
       if (e.response) {

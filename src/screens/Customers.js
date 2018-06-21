@@ -86,7 +86,10 @@ class Customers extends React.Component {
             centerElement='Customers'
             onLeftElementPress={() => this.props.navigation.goBack()}
             rightElement='add'
-            onRightElementPress={() => this.props.navigation.navigate('AddCustomer', {token: this.props.navigation.state.params.token})}
+            onRightElementPress={() => this.props.navigation.navigate('AddCustomer', {
+              token: this.props.navigation.state.params.token,
+              onNavigateBack: this._refreshCustomers
+            })}
           />
           {!!this.state.errorMessage && (
             <Text style={{fontSize: 14, color: 'red', padding: 5}}>

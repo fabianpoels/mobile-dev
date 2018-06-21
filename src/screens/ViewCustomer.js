@@ -49,28 +49,6 @@ class ViewCustomer extends React.Component {
     })
   }
 
-  _refreshCustomer = () => {
-    const API = Axios.create({
-      headers: {
-        'Content-Type': 'application/json',
-        'x-access-token': this.props.navigation.state.params.token
-      }
-    })
-    API.get(Globals.API_URL+'/customer/'+this.props.navigation.state.params.customer._id).then( response => {
-      this.setState({
-        customer: response.data,
-        contactPersons: response.data.contactPersons,
-      })
-    }).catch(e => {
-      let error
-      if (e.response) {
-        error = e.response.data.error
-      } else {
-        error = e.message
-      }
-    })
-  }
-
   _updateCustomer = (c) => {
     this.setState({
       customer: c,
@@ -250,7 +228,8 @@ class ViewCustomer extends React.Component {
               }
               onPress={() => this.props.navigation.navigate('AddContact', {
                 token: this.props.screenProps.token,
-                customerId: this.state.customer._id
+                customerId: this.state.customer._id,
+                onNavigateBack: this._loadCustomer
               })}
             />
           </Card>
